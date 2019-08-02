@@ -1,0 +1,18 @@
+function CreateSpreadsheetWithNamedSheets() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getActiveSheet();
+  var range = sheet.getRange(1,1,5); //define range of cells which values we want to use
+  var values = range.getValues();
+  //Logger.log(sheet.getName());
+  //Logger.log(values);
+  
+  //now create Sheet in background - found in drive but will not open autom. 
+  var ssNew = SpreadsheetApp.create("Child"); //define name of new spreadsheet
+  var url = ssNew.getUrl();
+  var newFile = SpreadsheetApp.openByUrl(url)
+  var newSS = newFile.getActiveSheet();
+  //now create the sheets with defined names from master spreadsheet    
+  for(loopValues = 0; loopValues < values.length; loopValues++){
+    ssNew.insertSheet(values[loopValues][0]);    
+  }  
+}
