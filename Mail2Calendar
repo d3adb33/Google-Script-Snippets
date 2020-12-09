@@ -1,0 +1,60 @@
+function OnOpen() {
+
+  var ui = SpreadsheetApp.getUi(); // Same variations.
+
+  var result = ui.alert(
+     'Please confirm',
+     'Are you sure you want to continue?',
+      ui.ButtonSet.YES_NO);
+
+  // Process the user's response.
+  if (result == ui.Button.YES) {
+    // User clicked "Yes".
+    CalendarEvent();
+  } else {
+    // User clicked "No" or X in the title bar.
+    ui.alert('Cancelt!');
+  }
+}
+
+function CalendarEvent() {
+  //get environment
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  ss.setActiveSheet(ss.getSheetByName("<Name>"));
+  var sheet = SpreadsheetApp.getActiveSheet();
+  
+  //define Data Range 
+  var dataRange = sheet.getRange("A2:L2");
+  var data = dataRange.getValues();
+  
+  for (i in data) {
+    var rowData = data[i];
+    var calendarId = rowData[10]; //9
+    var TargetCalendarName = rowData[11];
+    var start = rowData[7];
+    var endTime = rowData[8];
+    var event = {
+      summary: '<....>',
+      location: rowData[5],
+      description: '<....>',
+      start: {
+        dateTime: start.toISOString()
+      },
+      end: {
+        dateTime: endTime.toISOString()
+      },
+      attendees: [
+        {email: rowData[10]}
+      ],
+    };
+    event = Calendar.Events.insert(event, calendarId);
+    var emailAddress = rowData[10];
+    var recipient = rowData[1] + " " + rowData[0];
+    var subject = "<....>";
+    
+    var body = "<HTML><BODY>"
+    +"</P></BODY></HTML>";
+    
+    MailApp.sendEmail({to:emailAddress, subject: subject, htmlBody: body});
+   }
+}
